@@ -4,6 +4,8 @@ from Cython.Distutils import build_ext
 import numpy, os, platform, sys
 from os.path import join as pjoin
 
+from numpy.lib.polynomial import _poly_dispatcher
+
 
 # Obtain the numpy include directory.  This logic works across numpy versions.
 try:
@@ -18,10 +20,10 @@ def check_for_flag(flag_str, truemsg=False, falsemsg=False):
 	    enabled = False
 
 	if enabled and not truemsg == False:
-		print truemsg
+		print(truemsg)
 	elif not enabled and not falsemsg == False:
-		print falsemsg
-		print "   $ sudo "+flag_str+"=ON python setup.py install"
+		print(falsemsg)
+		print("   $ sudo "+flag_str+"=ON python setup.py install")
 	return enabled
 
 use_cuda = check_for_flag("WITH_CUDA", \
@@ -31,9 +33,9 @@ trace    = check_for_flag("TRACE", \
 	"Compiling with trace enabled for Bresenham's Line", \
 	"Compiling without trace enabled for Bresenham's Line")
 
-print 
-print "--------------"
-print 
+print ()
+print ("--------------")
+print ()
 
 # support for compiling in clang
 if platform.system().lower() == "darwin":
@@ -48,44 +50,42 @@ def find_in_path(name, path):
         if os.path.exists(binpath):
             return os.path.abspath(binpath)
     return None
-
+_poly_dispatcher
 # export CUDAHOME=/usr/local/cuda
-def locate_cuda():
-    """Locate the CUDA environment on the system
+# def locate_cuda():
+#     """Locate the CUDA environment on the system
+#     Returns a dict with keys 'home', 'nvcc', 'include', and 'lib64'
+#     and values giving the absolute path to each directory.
+#     Starts by looking for the CUDAHOME env variable. If not found, everything
+#     is based on finding 'nvcc' in the PATH.
+#     """
+#     # print os.environ
+#     # first check if the CUDAHOME env variable is in use
+#     if os.path.isdir("/usr/local/cuda-7.5"):
+#     	home = "/usr/local/cuda-7.5"
+#         nvcc = pjoin(home, 'bin', 'nvcc')
+#     elif os.path.isdir("/usr/local/cuda"):
+#     	home = "/usr/local/cuda"
+#         nvcc = pjoin(home, 'bin', 'nvcc')
+#     elif 'CUDAHOME' in os.environ:
+#         home = os.environ['CUDAHOME']
+#         nvcc = pjoin(home, 'bin', 'nvcc')
+#     else:
+#         # otherwise, search the PATH for NVCC
+#         nvcc = find_in_path('nvcc', os.environ['PATH'])
+#         if nvcc is None:
+#             raise EnvironmentError('The nvcc binary could not be '
+#                 'located in your $PATH. Either add it to your path, or set $CUDAHOME')
+#         home = os.path.dirname(os.path.dirname(nvcc))
 
-    Returns a dict with keys 'home', 'nvcc', 'include', and 'lib64'
-    and values giving the absolute path to each directory.
+#     cudaconfig = {'home':home, 'nvcc':nvcc,
+#                   'include': pjoin(home, 'include'),
+#                   'lib64': pjoin(home, 'lib64')}
+#     for k, v in cudaconfig.iteritems():
+#         if not os.path.exists(v):
+#             raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
 
-    Starts by looking for the CUDAHOME env variable. If not found, everything
-    is based on finding 'nvcc' in the PATH.
-    """
-    # print os.environ
-    # first check if the CUDAHOME env variable is in use
-    if os.path.isdir("/usr/local/cuda-7.5"):
-    	home = "/usr/local/cuda-7.5"
-        nvcc = pjoin(home, 'bin', 'nvcc')
-    elif os.path.isdir("/usr/local/cuda"):
-    	home = "/usr/local/cuda"
-        nvcc = pjoin(home, 'bin', 'nvcc')
-    elif 'CUDAHOME' in os.environ:
-        home = os.environ['CUDAHOME']
-        nvcc = pjoin(home, 'bin', 'nvcc')
-    else:
-        # otherwise, search the PATH for NVCC
-        nvcc = find_in_path('nvcc', os.environ['PATH'])
-        if nvcc is None:
-            raise EnvironmentError('The nvcc binary could not be '
-                'located in your $PATH. Either add it to your path, or set $CUDAHOME')
-        home = os.path.dirname(os.path.dirname(nvcc))
-
-    cudaconfig = {'home':home, 'nvcc':nvcc,
-                  'include': pjoin(home, 'include'),
-                  'lib64': pjoin(home, 'lib64')}
-    for k, v in cudaconfig.iteritems():
-        if not os.path.exists(v):
-            raise EnvironmentError('The CUDA %s path could not be located in %s' % (k, v))
-
-    return cudaconfig
+#     return cudaconfig
 
 
 ##################### Configuration ############################

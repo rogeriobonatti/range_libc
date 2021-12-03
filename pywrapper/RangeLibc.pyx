@@ -5,7 +5,7 @@ import numpy as np
 cimport numpy as np
 from cython.operator cimport dereference as deref
 
-USE_ROS_MAP = True
+USE_ROS_MAP = False
 if USE_ROS_MAP:
     from nav_msgs.msg import OccupancyGrid
     import tf.transformations
@@ -140,8 +140,8 @@ cdef class PyOMap:
             if isinstance(arg1, np.ndarray):
                 height, width = arg1.shape
                 self.thisptr = new OMap(<int>height,<int>width)
-                for y in xrange(height):
-                    for x in xrange(width):
+                for y in range(height):
+                    for x in range(width):
                         self.thisptr.grid[x][y] = <bool>arg1[y,x]
             elif USE_ROS_MAP and isinstance(arg1, OccupancyGrid):
                 map_msg = arg1
@@ -151,8 +151,8 @@ cdef class PyOMap:
                 # 0: permissible, -1: unmapped, 100: blocked
                 array_255 = np.array(map_msg.data).reshape((height, width))
 
-                for x in xrange(height):
-                    for y in xrange(width):
+                for x in range(height):
+                    for y in range(width):
                         if array_255[x,y] > 10:
                             self.thisptr.grid[x][y] = True
 
