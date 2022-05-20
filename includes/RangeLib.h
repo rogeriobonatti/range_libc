@@ -51,7 +51,7 @@ Useful Links: https://github.com/MRPT/mrpt/blob/4137046479222f3a71b5c00aee1d5fa8
 #include <tuple>
 
 #ifndef _MAKE_TRACE_MAP 
-	#define _MAKE_TRACE_MAP 0
+	#define _MAKE_TRACE_MAP 1
 #endif
 
 #define _TRACK_LUT_SIZE 0
